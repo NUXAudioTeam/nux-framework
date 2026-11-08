@@ -15,12 +15,14 @@ but not limited to them.
 | **Language / build** | C++20 · CMake 3.22+ |
 | **First target** | Windows x64 (Linux used for build verification) |
 
-> **Status: Phase 2 — Platform Layer.**
-> `nxf_core` provides the framework foundation (errors/results,
-> logging, preallocated buffers, an SPSC event queue, time) and
-> `nxf_platform` the OS services (filesystem, timing, synchronization,
-> system information, with Windows and POSIX backends). Each piece is
-> covered by unit tests. The `hello_nxf` example still builds and runs. Everything else in the module
+> **Status: Phase 3 — Audio Foundation.**
+> `nxf_core` provides the foundation, `nxf_platform` the OS services,
+> and `nxf_audio` the audio foundation: interleaved buffers, a
+> device/stream abstraction, an offline (simulated) backend used by
+> the tests, and a Windows WASAPI backend. **The WASAPI backend is
+> compiled by CI but not yet verified on real audio hardware** -
+> no device has been opened with it. Each testable piece is covered
+> by unit tests, and the `hello_nxf` example still builds and runs. Everything else in the module
 > list below is **planned, not implemented** — `docs/ROADMAP.md`
 > tracks each phase honestly. Do not mistake the directory layout
 > for finished features.
@@ -40,7 +42,7 @@ namespaces, interfaces and documentation.
 |---|---|---|
 | `nxf_core` | Foundational types, errors, logging interfaces, memory utilities, event primitives | ✅ Phase 1 implemented (tested) |
 | `nxf_platform` | OS abstraction, filesystem, clocks, synchronization, platform services | ✅ Phase 2 implemented (tested) |
-| `nxf_audio` | Audio devices, buffers, streams, device abstraction, engine contracts | ⬜ planned (Phase 3–4) |
+| `nxf_audio` | Audio devices, buffers, streams, device abstraction, engine contracts | 🟡 Phase 3: abstraction + offline backend tested; WASAPI compiled, hardware **not verified** |
 | `nxf_dsp` | Reusable signal processing (FFT, filters, dynamics, reverb, delay) | ⬜ planned (Phase 5) |
 | `nxf_midi` | MIDI messages, input/output, event routing | ⬜ planned (Phase 6) |
 | `nxf_gui` | Windows, components, controls, layout, input events | ⬜ planned (Phase 7) |
@@ -77,7 +79,7 @@ ctest --preset linux-dev
 Expected output of the example:
 
 ```text
-NXF - NUX Framework 0.3.0
+NXF - NUX Framework 0.4.0
 JUCE-independent C++20 framework for NUX audio applications.
 ```
 
