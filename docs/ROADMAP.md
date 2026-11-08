@@ -14,7 +14,7 @@ exists. Future phases are planned, not implemented.
 | 5 | DSP Engine — FFT, filters, EQ, dynamics, reverb, delay, resampling | ✅ done (known-answer tests; resampler is a linear baseline, not final quality) |
 | 6 | MIDI System — messages, devices, clocks, routing, event queues | 🟡 code complete: pure logic + offline backend tested, WinMM compiles in CI; **real MIDI hardware NOT PERFORMED**. WinMM sysex output not yet supported |
 | 7 | GUI Framework — windows, components, controls, event handling, layout engine | 🟡 code complete: components/layout/events/controls tested headless; Win32 window compiles in CI, **real display NOT PERFORMED**. Painting contract arrives with Phase 8 |
-| 8 | Graphics Engine — 2D renderer, text, images, waveform drawing, GPU acceleration | ⬜ planned |
+| 8 | Graphics Engine — 2D renderer, text, images, waveform drawing, GPU acceleration | 🟡 renderer contract + software renderer done and pixel-tested; a GPU/Direct2D backend behind `IRenderer` is future work, not implemented |
 | 9 | Project & State System — serialization, project files, undo/redo, saved-state | ⬜ planned |
 | 10 | Plugin Framework — VST3 scanning, hosting, processing, plugin windows, lifecycle | ⬜ planned |
 | 11 | Media & File I/O — WAV, audio import/export, metadata, file streams | ⬜ planned |
