@@ -15,9 +15,11 @@ but not limited to them.
 | **Language / build** | C++20 · CMake 3.22+ |
 | **First target** | Windows x64 (Linux used for build verification) |
 
-> **Status: Phase 0 — Architecture & Repository Foundation.**
-> Only `nxf_core` (version identity) is implemented so far, plus the
-> `hello_nxf` example and its tests. Everything else in the module
+> **Status: Phase 1 — NXF Core.**
+> `nxf_core` now provides the framework foundation: version identity,
+> error/result values, logging interfaces, preallocated buffers, a
+> real-time-safe SPSC event queue and monotonic time utilities — each
+> covered by unit tests. The `hello_nxf` example still builds and runs. Everything else in the module
 > list below is **planned, not implemented** — `docs/ROADMAP.md`
 > tracks each phase honestly. Do not mistake the directory layout
 > for finished features.
@@ -35,7 +37,7 @@ namespaces, interfaces and documentation.
 
 | Module | Responsibility | Phase 0 status |
 |---|---|---|
-| `nxf_core` | Foundational types, errors, logging interfaces, memory utilities, event primitives | 🟡 version identity only |
+| `nxf_core` | Foundational types, errors, logging interfaces, memory utilities, event primitives | ✅ Phase 1 implemented (tested) |
 | `nxf_platform` | OS abstraction, filesystem, clocks, synchronization, platform services | ⬜ planned (Phase 2) |
 | `nxf_audio` | Audio devices, buffers, streams, device abstraction, engine contracts | ⬜ planned (Phase 3–4) |
 | `nxf_dsp` | Reusable signal processing (FFT, filters, dynamics, reverb, delay) | ⬜ planned (Phase 5) |
@@ -74,7 +76,7 @@ ctest --preset linux-dev
 Expected output of the example:
 
 ```text
-NXF - NUX Framework 0.1.0
+NXF - NUX Framework 0.2.0
 JUCE-independent C++20 framework for NUX audio applications.
 ```
 
