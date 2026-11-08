@@ -38,3 +38,29 @@ jobs:
         run: cmake --build --preset linux-dev
       - name: Test
         run: ctest --preset linux-dev
+
+  linux-vst3:
+    name: Linux VST3 hosting (optional SDK build)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        run: sudo apt-get update && sudo apt-get install -y ninja-build g++
+      - name: Configure (VST3 SDK fetched, pinned v3.8.1_build_84)
+        run: cmake -S . -B build-vst3 -G Ninja -DCMAKE_BUILD_TYPE=Debug -DNXF_ENABLE_VST3=ON
+      - name: Build
+        run: cmake --build build-vst3 --parallel
+      - name: Test (includes real .vst3 fixture end-to-end)
+        run: ctest --test-dir build-vst3 --output-on-failure
+
+  windows-vst3:
+    name: Windows x64 VST3 hosting (optional SDK build)
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure (VST3 SDK fetched, pinned v3.8.1_build_84)
+        run: cmake -S . -B build-vst3 -G "Visual Studio 17 2022" -A x64 -DNXF_ENABLE_VST3=ON
+      - name: Build
+        run: cmake --build build-vst3 --config Debug --parallel
+      - name: Test (includes real .vst3 fixture end-to-end)
+        run: ctest --test-dir build-vst3 -C Debug --output-on-failure

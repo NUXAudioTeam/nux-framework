@@ -26,7 +26,12 @@ but not limited to them.
 > Phase 4 adds the engine on top: a preallocated node graph (sources,
 > gain, summed mixing/routing, cycle-checked at prepare time) and a
 > lock-free transport, verified by offline rendering tests including
-> through the Phase 3 offline stream. Everything else in the module
+> through the Phase 3 offline stream. Phase 10's `nxf_plugin` hosts
+> real VST3 plug-ins when NXF is configured with
+> `-DNXF_ENABLE_VST3=ON` (Steinberg VST3 SDK 3.8.1, MIT-licensed;
+> see `docs/DEPENDENCIES_AND_LICENSING.md`); the default build stays
+> SDK-free and the adapter then reports Unavailable honestly.
+> Everything else in the module
 > list below is **planned, not implemented** — `docs/ROADMAP.md`
 > tracks each phase honestly. Do not mistake the directory layout
 > for finished features.
@@ -51,7 +56,7 @@ namespaces, interfaces and documentation.
 | `nxf_midi` | MIDI messages, input/output, event routing | ⬜ planned (Phase 6) |
 | `nxf_gui` | Windows, components, controls, layout, input events | ⬜ planned (Phase 7) |
 | `nxf_graphics` | 2D rendering, text, images, GPU abstraction | 🟡 Phase 8: software renderer pixel-tested; GPU backend behind `IRenderer` planned |
-| `nxf_plugin` | Plugin format adapters and hosting interfaces (VST3 first) | 🟡 Phase 10: architecture + own test format working; VST3 adapter is an honest Unavailable seam (no SDK) |
+| `nxf_plugin` | Plugin format adapters and hosting interfaces (VST3 first) | 🟡 Phase 10: own test format + real VST3 hosting behind the optional `NXF_ENABLE_VST3` (Steinberg SDK 3.8.1, MIT); default build stays SDK-free |
 | `nxf_project` | Project persistence, serialization, undo/redo, saved-state | ⬜ planned (Phase 9) |
 | `nxf_testing` | Test utilities, mock devices, audio fixtures, benchmarks | ⬜ planned |
 
@@ -83,7 +88,7 @@ ctest --preset linux-dev
 Expected output of the example:
 
 ```text
-NXF - NUX Framework 0.11.0
+NXF - NUX Framework 0.12.0
 JUCE-independent C++20 framework for NUX audio applications.
 ```
 

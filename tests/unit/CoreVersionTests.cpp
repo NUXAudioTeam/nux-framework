@@ -31,7 +31,7 @@ int main()
     NXF_CHECK(nxf::core::versionMajor() == 0);
     NXF_CHECK(nxf::core::versionMinor() == 11);
     NXF_CHECK(nxf::core::versionPatch() == 0);
-    NXF_CHECK(nxf::core::versionString() == "0.11.0");
+    NXF_CHECK(nxf::core::versionString() == "0.12.0");
     NXF_CHECK(nxf::core::frameworkName() == "NXF - NUX Framework");
     NXF_CHECK(!nxf::core::frameworkName().empty());
 

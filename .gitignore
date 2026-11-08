@@ -30,3 +30,4 @@ Desktop.ini
 # Logs / local state
 *.log
 .cache/
+build-vst3/

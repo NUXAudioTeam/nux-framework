@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(nxf
-    VERSION 0.11.0
+    VERSION 0.12.0
     DESCRIPTION "NXF - NUX Framework: an original, JUCE-independent C++ framework for audio applications"
     LANGUAGES CXX)
 
@@ -13,6 +13,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(NXF_BUILD_TESTS "Build NXF tests" ON)
 option(NXF_BUILD_EXAMPLES "Build NXF examples" ON)
+option(NXF_ENABLE_VST3 "Build real VST3 hosting with the Steinberg VST3 SDK" OFF)
+set(NXF_VST3_SDK_DIR "" CACHE PATH "Path to a Steinberg VST3 SDK checkout (empty: fetch the pinned release)")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(NxfWarnings)
@@ -142,16 +144,58 @@ target_compile_features(nxf_project PUBLIC cxx_std_20)
 target_link_libraries(nxf_project PUBLIC nxf::core nxf::platform)
 nxf_set_warnings(nxf_project)
 
+# The VST3 adapter is compiled only on request
+# (NXF_ENABLE_VST3). The dependency, its pinned version and its
+# license are documented in docs/DEPENDENCIES_AND_LICENSING.md.
+# SDK types never appear in public NXF headers; they stay inside
+# the adapter translation unit.
+if(NXF_ENABLE_VST3)
+    include(FetchContent)
+    set(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(SMTG_ENABLE_VST3_HOSTING_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(SMTG_ENABLE_VSTGUI_SUPPORT OFF CACHE BOOL "" FORCE)
+    if(NXF_VST3_SDK_DIR)
+        set(NXF_VST3_SDK_ROOT "${NXF_VST3_SDK_DIR}")
+        add_subdirectory("${NXF_VST3_SDK_DIR}" "${CMAKE_BINARY_DIR}/vst3sdk")
+    else()
+        FetchContent_Declare(vst3sdk
+            GIT_REPOSITORY https://github.com/steinbergmedia/vst3sdk.git
+            GIT_TAG v3.8.1_build_84
+            GIT_SUBMODULES base pluginterfaces public.sdk cmake
+            GIT_SHALLOW TRUE)
+        FetchContent_MakeAvailable(vst3sdk)
+        set(NXF_VST3_SDK_ROOT "${vst3sdk_SOURCE_DIR}")
+    endif()
+    set(NXF_PLUGIN_VST3_SOURCE src/plugin/vst3/Vst3Adapter.cpp)
+else()
+    set(NXF_PLUGIN_VST3_SOURCE src/plugin/Vst3Stub.cpp)
+endif()
+
 add_library(nxf_plugin
     src/plugin/PluginDescriptor.cpp
     src/plugin/PluginManager.cpp
-    src/plugin/PluginFormatAdapter.cpp)
+    src/plugin/PluginFormatAdapter.cpp
+    ${NXF_PLUGIN_VST3_SOURCE})
 add_library(nxf::plugin ALIAS nxf_plugin)
 target_include_directories(nxf_plugin PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 target_compile_features(nxf_plugin PUBLIC cxx_std_20)
 target_link_libraries(nxf_plugin PUBLIC nxf::core nxf::platform nxf::audio nxf::midi nxf::project)
+if(NXF_ENABLE_VST3)
+    target_link_libraries(nxf_plugin PRIVATE sdk_hosting)
+    target_sources(nxf_plugin PRIVATE "${NXF_VST3_SDK_ROOT}/public.sdk/source/common/memorystream.cpp")
+    # The SDK leaves the platform module loader to the host
+    # target (its hosting samples do exactly this).
+    if(WIN32)
+        target_sources(nxf_plugin PRIVATE "${NXF_VST3_SDK_ROOT}/public.sdk/source/vst/hosting/module_win32.cpp")
+    elseif(APPLE)
+        enable_language(OBJCXX)
+        target_sources(nxf_plugin PRIVATE "${NXF_VST3_SDK_ROOT}/public.sdk/source/vst/hosting/module_mac.mm")
+    else()
+        target_sources(nxf_plugin PRIVATE "${NXF_VST3_SDK_ROOT}/public.sdk/source/vst/hosting/module_linux.cpp")
+    endif()
+endif()
 nxf_set_warnings(nxf_plugin)
 
 if(NXF_BUILD_EXAMPLES)
@@ -200,7 +244,7 @@ if(NXF_BUILD_TESTS)
         "ProjectFileTests:nxf.project.file"
         "PluginManagerTests:nxf.plugin.manager"
         "PluginInstanceTests:nxf.plugin.instance"
-        "PluginGraphTests:nxf.plugin.graph")
+        "PluginGraphTests:nxf.plugin.graph" "Vst3HostingTests:nxf.plugin.vst3")
     foreach(entry IN LISTS NXF_UNIT_TESTS)
         string(REPLACE ":" ";" parts "${entry}")
         list(GET parts 0 source_name)
@@ -211,6 +255,25 @@ if(NXF_BUILD_TESTS)
         nxf_set_warnings(${source_name})
         add_test(NAME ${test_label} COMMAND ${source_name})
     endforeach()
+
+    # Real VST3 end-to-end fixture: a tiny gain plug-in built
+    # with the SDK, scanned/processed by Vst3HostingTests through
+    # the NXF_TEST_VST3_PLUGIN environment variable.
+    if(NXF_ENABLE_VST3 AND COMMAND smtg_add_vst3plugin)
+        if(WIN32)
+            set(NXF_VST3_FIXTURE_ENTRY "${NXF_VST3_SDK_ROOT}/public.sdk/source/main/dllmain.cpp")
+        elseif(APPLE)
+            set(NXF_VST3_FIXTURE_ENTRY "${NXF_VST3_SDK_ROOT}/public.sdk/source/main/macmain.cpp")
+        else()
+            set(NXF_VST3_FIXTURE_ENTRY "${NXF_VST3_SDK_ROOT}/public.sdk/source/main/linuxmain.cpp")
+        endif()
+        smtg_add_vst3plugin(nxf_vst3_test_gain
+            tests/vst3_fixture/Vst3TestGain.cpp
+            ${NXF_VST3_FIXTURE_ENTRY})
+        target_link_libraries(nxf_vst3_test_gain PRIVATE sdk)
+        set_tests_properties(nxf.plugin.vst3 PROPERTIES ENVIRONMENT
+            "NXF_TEST_VST3_PLUGIN=${CMAKE_BINARY_DIR}/VST3/$<CONFIG>/nxf_vst3_test_gain.vst3")
+    endif()
 endif()
 
-message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3-4, hardware unverified), nxf_dsp (Phase 5), nxf_midi (Phase 6, hardware unverified), nxf_gui (Phase 7, display unverified), nxf_graphics (Phase 8), nxf_project (Phase 9), nxf_plugin (Phase 10, no VST3 SDK). All other modules are planned - see docs/ROADMAP.md.")
+message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3-4, hardware unverified), nxf_dsp (Phase 5), nxf_midi (Phase 6, hardware unverified), nxf_gui (Phase 7, display unverified), nxf_graphics (Phase 8), nxf_project (Phase 9), nxf_plugin (Phase 10; VST3 hosting enabled=${NXF_ENABLE_VST3}). All other modules are planned - see docs/ROADMAP.md.")

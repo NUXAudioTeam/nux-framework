@@ -24,13 +24,17 @@ PluginScanResult PluginManager::scanDirectory(const std::string& directory)
         return result;
     }
     for (const std::string& name : listing.value()) {
-        if (name.size() < 8 || name.substr(name.size() - 8) != ".nxfplug") continue;
+        const bool isNativeCandidate = name.size() >= 8 && name.substr(name.size() - 8) == ".nxfplug";
+        const bool isVst3Candidate = name.size() >= 5 && name.substr(name.size() - 5) == ".vst3";
+        if (!isNativeCandidate && !isVst3Candidate) continue;
         const std::string path = directory + "/" + name;
         bool scanned = false;
         for (const auto& adapter : adapters_) {
             auto descriptor = adapter->scanFile(path);
             if (!descriptor.hasValue()) {
-                if (adapter->formatName() == std::string_view{"nxf-test"})
+                if (isNativeCandidate && adapter->formatName() == std::string_view{"nxf-test"})
+                    result.errors.push_back(name + ": " + std::string{descriptor.error().message()});
+                if (isVst3Candidate && adapter->formatName() == std::string_view{"vst3"})
                     result.errors.push_back(name + ": " + std::string{descriptor.error().message()});
                 continue;
             }

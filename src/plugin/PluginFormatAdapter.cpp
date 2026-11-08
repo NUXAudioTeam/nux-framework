@@ -174,16 +174,4 @@ nxf::core::Result<std::unique_ptr<IPluginInstance>> NativeTestPluginFormatAdapte
     return R::failure(Error::unavailable("unknown nxf-test plugin behaviour '" + descriptor.factoryKey + "'"));
 }
 
-nxf::core::Result<PluginDescriptor> Vst3FormatAdapter::scanFile(const std::string&)
-{
-    return nxf::core::Result<PluginDescriptor>::failure(
-        Error::unavailable("VST3 SDK is not integrated (licensing decision pending)"));
-}
-
-nxf::core::Result<std::unique_ptr<IPluginInstance>> Vst3FormatAdapter::createInstance(const PluginDescriptor&)
-{
-    return nxf::core::Result<std::unique_ptr<IPluginInstance>>::failure(
-        Error::unavailable("VST3 SDK is not integrated (licensing decision pending)"));
-}
-
 } // namespace nxf::plugin
