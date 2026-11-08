@@ -124,13 +124,14 @@ private:
                     case WM_LBUTTONUP: case WM_MBUTTONUP: case WM_RBUTTONUP:
                         event.type = MouseEventType::Up; ReleaseCapture(); break;
                     case WM_MOUSEMOVE: event.type = MouseEventType::Move; break;
-                    case WM_MOUSEWHEEL:
+                    case WM_MOUSEWHEEL: {
                         event.type = MouseEventType::Wheel;
                         event.wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
                         POINT point{event.position.x, event.position.y};
                         ScreenToClient(handle_, &point);
                         event.position = {point.x, point.y};
                         break;
+                    }
                     default: break;
                 }
                 root_->dispatchMouseEvent(event);
