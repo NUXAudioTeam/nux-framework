@@ -8,7 +8,7 @@ namespace nxf::core {
 /// the version tests fail if the two drift apart.
 /// Thread-safety: all functions here are pure and thread-safe.
 [[nodiscard]] constexpr int versionMajor() noexcept { return 0; }
-[[nodiscard]] constexpr int versionMinor() noexcept { return 2; }
+[[nodiscard]] constexpr int versionMinor() noexcept { return 3; }
 [[nodiscard]] constexpr int versionPatch() noexcept { return 0; }
 
 /// Human-readable framework name, e.g. for an application's about box.

@@ -15,10 +15,11 @@ but not limited to them.
 | **Language / build** | C++20 · CMake 3.22+ |
 | **First target** | Windows x64 (Linux used for build verification) |
 
-> **Status: Phase 1 — NXF Core.**
-> `nxf_core` now provides the framework foundation: version identity,
-> error/result values, logging interfaces, preallocated buffers, a
-> real-time-safe SPSC event queue and monotonic time utilities — each
+> **Status: Phase 2 — Platform Layer.**
+> `nxf_core` provides the framework foundation (errors/results,
+> logging, preallocated buffers, an SPSC event queue, time) and
+> `nxf_platform` the OS services (filesystem, timing, synchronization,
+> system information, with Windows and POSIX backends). Each piece is
 > covered by unit tests. The `hello_nxf` example still builds and runs. Everything else in the module
 > list below is **planned, not implemented** — `docs/ROADMAP.md`
 > tracks each phase honestly. Do not mistake the directory layout
@@ -38,7 +39,7 @@ namespaces, interfaces and documentation.
 | Module | Responsibility | Phase 0 status |
 |---|---|---|
 | `nxf_core` | Foundational types, errors, logging interfaces, memory utilities, event primitives | ✅ Phase 1 implemented (tested) |
-| `nxf_platform` | OS abstraction, filesystem, clocks, synchronization, platform services | ⬜ planned (Phase 2) |
+| `nxf_platform` | OS abstraction, filesystem, clocks, synchronization, platform services | ✅ Phase 2 implemented (tested) |
 | `nxf_audio` | Audio devices, buffers, streams, device abstraction, engine contracts | ⬜ planned (Phase 3–4) |
 | `nxf_dsp` | Reusable signal processing (FFT, filters, dynamics, reverb, delay) | ⬜ planned (Phase 5) |
 | `nxf_midi` | MIDI messages, input/output, event routing | ⬜ planned (Phase 6) |
@@ -76,7 +77,7 @@ ctest --preset linux-dev
 Expected output of the example:
 
 ```text
-NXF - NUX Framework 0.2.0
+NXF - NUX Framework 0.3.0
 JUCE-independent C++20 framework for NUX audio applications.
 ```
 

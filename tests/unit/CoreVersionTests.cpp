@@ -29,9 +29,9 @@ void check(bool condition, std::string_view expression, int line)
 int main()
 {
     NXF_CHECK(nxf::core::versionMajor() == 0);
-    NXF_CHECK(nxf::core::versionMinor() == 2);
+    NXF_CHECK(nxf::core::versionMinor() == 3);
     NXF_CHECK(nxf::core::versionPatch() == 0);
-    NXF_CHECK(nxf::core::versionString() == "0.2.0");
+    NXF_CHECK(nxf::core::versionString() == "0.3.0");
     NXF_CHECK(nxf::core::frameworkName() == "NXF - NUX Framework");
     NXF_CHECK(!nxf::core::frameworkName().empty());
 
