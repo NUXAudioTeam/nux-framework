@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(nxf
-    VERSION 0.10.0
+    VERSION 0.11.0
     DESCRIPTION "NXF - NUX Framework: an original, JUCE-independent C++ framework for audio applications"
     LANGUAGES CXX)
 
@@ -142,6 +142,18 @@ target_compile_features(nxf_project PUBLIC cxx_std_20)
 target_link_libraries(nxf_project PUBLIC nxf::core nxf::platform)
 nxf_set_warnings(nxf_project)
 
+add_library(nxf_plugin
+    src/plugin/PluginDescriptor.cpp
+    src/plugin/PluginManager.cpp
+    src/plugin/PluginFormatAdapter.cpp)
+add_library(nxf::plugin ALIAS nxf_plugin)
+target_include_directories(nxf_plugin PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+target_compile_features(nxf_plugin PUBLIC cxx_std_20)
+target_link_libraries(nxf_plugin PUBLIC nxf::core nxf::platform nxf::audio nxf::midi nxf::project)
+nxf_set_warnings(nxf_plugin)
+
 if(NXF_BUILD_EXAMPLES)
     add_subdirectory(examples/hello_nxf)
 endif()
@@ -185,17 +197,20 @@ if(NXF_BUILD_TESTS)
         "GraphicsTextImageTests:nxf.graphics.text_image"
         "ProjectValueTests:nxf.project.value"
         "ProjectDocumentTests:nxf.project.document"
-        "ProjectFileTests:nxf.project.file")
+        "ProjectFileTests:nxf.project.file"
+        "PluginManagerTests:nxf.plugin.manager"
+        "PluginInstanceTests:nxf.plugin.instance"
+        "PluginGraphTests:nxf.plugin.graph")
     foreach(entry IN LISTS NXF_UNIT_TESTS)
         string(REPLACE ":" ";" parts "${entry}")
         list(GET parts 0 source_name)
         list(GET parts 1 test_label)
         add_executable(${source_name} tests/unit/${source_name}.cpp)
-        target_link_libraries(${source_name} PRIVATE nxf::core nxf::platform nxf::audio nxf::dsp nxf::midi nxf::gui nxf::graphics nxf::project Threads::Threads)
+        target_link_libraries(${source_name} PRIVATE nxf::core nxf::platform nxf::audio nxf::dsp nxf::midi nxf::gui nxf::graphics nxf::project nxf::plugin Threads::Threads)
         target_include_directories(${source_name} PRIVATE tests/unit)
         nxf_set_warnings(${source_name})
         add_test(NAME ${test_label} COMMAND ${source_name})
     endforeach()
 endif()
 
-message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3-4, hardware unverified), nxf_dsp (Phase 5), nxf_midi (Phase 6, hardware unverified), nxf_gui (Phase 7, display unverified), nxf_graphics (Phase 8), nxf_project (Phase 9). All other modules are planned - see docs/ROADMAP.md.")
+message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3-4, hardware unverified), nxf_dsp (Phase 5), nxf_midi (Phase 6, hardware unverified), nxf_gui (Phase 7, display unverified), nxf_graphics (Phase 8), nxf_project (Phase 9), nxf_plugin (Phase 10, no VST3 SDK). All other modules are planned - see docs/ROADMAP.md.")

@@ -29,7 +29,7 @@ That is the complete list. In particular:
 
 | Candidate | For phase | License position |
 |---|---|---|
-| Steinberg VST3 SDK | 10 (Plugin Framework) | Steinberg VST3 licensing terms apply; NXF code will keep SDK types behind the `nxf_plugin` adapter. Decision required before Phase 10 starts. |
+| Steinberg VST3 SDK | 10 (Plugin Framework) | **Phase 10 was built SDK-free (option 1):** the architecture, scanning, lifecycle and hosting contracts are implemented and tested in NXF's own `.nxfplug` test format, and `Vst3FormatAdapter` returns Unavailable. Adopting the SDK still requires this decision; SDK types will stay behind the adapter when it happens. |
 | ASIO SDK (Steinberg) | 3–4 (optional adapter) | Proprietary SDK terms; ASIO stays an optional adapter, never a core dependency. Decision required before use. |
 | WASAPI / Direct2D / DirectWrite | 3, 7–8 | Windows SDK system components; no separate redistribution license for linking the platform APIs. |
 | A unit-test framework (TBD) | 1+ | Must be permissively licensed and listed here before adoption. |

@@ -16,7 +16,7 @@ exists. Future phases are planned, not implemented.
 | 7 | GUI Framework — windows, components, controls, event handling, layout engine | 🟡 code complete: components/layout/events/controls tested headless; Win32 window compiles in CI, **real display NOT PERFORMED**. Painting contract arrives with Phase 8 |
 | 8 | Graphics Engine — 2D renderer, text, images, waveform drawing, GPU acceleration | 🟡 renderer contract + software renderer done and pixel-tested; a GPU/Direct2D backend behind `IRenderer` is future work, not implemented |
 | 9 | Project & State System — serialization, project files, undo/redo, saved-state | ⬜ planned |
-| 10 | Plugin Framework — VST3 scanning, hosting, processing, plugin windows, lifecycle | ⬜ planned |
+| 10 | Plugin Framework — VST3 scanning, hosting, processing, plugin windows, lifecycle | 🟡 architecture, scanning, lifecycle, parameters/state and graph hosting done in the framework's own test format; the Steinberg VST3 adapter itself waits on the SDK licensing decision (seam returns Unavailable) |
 | 11 | Media & File I/O — WAV, audio import/export, metadata, file streams | ⬜ planned |
 | 12 | Developer SDK — public headers, CMake package, examples, documentation, API stability | ⬜ planned |
 | 13 | NUX DAW Integration — connect NXF modules to NUX DAW one by one; remove JUCE from the DAW | ⬜ planned |
