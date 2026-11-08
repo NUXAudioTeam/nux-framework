@@ -15,7 +15,7 @@ but not limited to them.
 | **Language / build** | C++20 · CMake 3.22+ |
 | **First target** | Windows x64 (Linux used for build verification) |
 
-> **Status: Phase 9 — Project & State System.**
+> **Status: Phase 10 — Plugin Framework.**
 > `nxf_core` provides the foundation, `nxf_platform` the OS services,
 > and `nxf_audio` the audio foundation: interleaved buffers, a
 > device/stream abstraction, an offline (simulated) backend used by
@@ -51,7 +51,7 @@ namespaces, interfaces and documentation.
 | `nxf_midi` | MIDI messages, input/output, event routing | ⬜ planned (Phase 6) |
 | `nxf_gui` | Windows, components, controls, layout, input events | ⬜ planned (Phase 7) |
 | `nxf_graphics` | 2D rendering, text, images, GPU abstraction | 🟡 Phase 8: software renderer pixel-tested; GPU backend behind `IRenderer` planned |
-| `nxf_plugin` | Plugin format adapters and hosting interfaces (VST3 first) | ⬜ planned (Phase 10) |
+| `nxf_plugin` | Plugin format adapters and hosting interfaces (VST3 first) | 🟡 Phase 10: architecture + own test format working; VST3 adapter is an honest Unavailable seam (no SDK) |
 | `nxf_project` | Project persistence, serialization, undo/redo, saved-state | ⬜ planned (Phase 9) |
 | `nxf_testing` | Test utilities, mock devices, audio fixtures, benchmarks | ⬜ planned |
 
@@ -83,7 +83,7 @@ ctest --preset linux-dev
 Expected output of the example:
 
 ```text
-NXF - NUX Framework 0.10.0
+NXF - NUX Framework 0.11.0
 JUCE-independent C++20 framework for NUX audio applications.
 ```
 
