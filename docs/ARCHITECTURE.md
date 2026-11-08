@@ -5,7 +5,9 @@ original design: no JUCE dependency, no JUCE API compatibility, no
 adapted JUCE source. This document defines module boundaries and the
 dependency rules between them. Phase 1 implemented `nxf_core`; Phase 2 added `nxf_platform`
 (filesystem, timing, events, system information with Windows/POSIX
-backend files selected by CMake). The rest are contracts for later phases.
+backend files selected by CMake), and Phase 3 added `nxf_audio`
+(buffers, device/stream contracts, an offline backend and a WASAPI
+backend behind the same interface). The rest are contracts for later phases.
 
 ## Layering (dependencies point down only)
 

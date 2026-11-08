@@ -9,7 +9,7 @@ exists. Future phases are planned, not implemented.
 | 0 | Architecture & Repository Foundation — repo, CMake layout, coding standards, module contracts, licensing inventory | ✅ done |
 | 1 | NXF Core — types, memory, logging, errors, threading, events, utilities | ✅ done |
 | 2 | Platform Layer — Windows filesystem, timing, synchronization, system information | ✅ done |
-| 3 | Audio Foundation — device abstraction, buffers, streams, WASAPI input/output | ⬜ planned |
+| 3 | Audio Foundation — device abstraction, buffers, streams, WASAPI input/output | 🟡 code complete: abstraction + offline backend tested, WASAPI compiles in CI; **opening a real device is NOT PERFORMED (no hardware)** |
 | 4 | Audio Engine — graph, nodes, routing, mixing, transport, real-time processing | ⬜ planned |
 | 5 | DSP Engine — FFT, filters, EQ, dynamics, reverb, delay, resampling | ⬜ planned |
 | 6 | MIDI System — messages, devices, clocks, routing, event queues | ⬜ planned |
@@ -31,3 +31,15 @@ exists. Future phases are planned, not implemented.
 - Anything needing physical audio hardware is reported as
   **not performed** until it has actually run on hardware. A green
   CI build proves code, not sound.
+
+## Phase 3 verification note
+
+Verified: buffer/view behaviour, stream configuration validation,
+the offline stream lifecycle and callback pump, backend enumeration
+logic (offline), and that the WASAPI backend **compiles and links**
+under MSVC in CI (Debug + Release).
+
+Not performed: enumerating or opening a physical device, duplex
+capture/render, latency, glitch behaviour. CI runners have no audio
+hardware, so device-level claims wait for a run on a real Windows
+PC - the same honesty rule as NUX DAW's hardware checklist.
