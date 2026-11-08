@@ -1,0 +1,40 @@
+name: Build and test
+
+# Phase 0 CI: prove the foundation configures, builds and tests on
+# the primary target (Windows x64) and on Linux. CI has no audio
+# hardware: a green run proves the code, never physical audio.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  windows:
+    name: Windows x64 (${{ matrix.config }})
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake --preset windows-x64
+      - name: Build
+        run: cmake --build build/windows-x64 --config ${{ matrix.config }} --parallel
+      - name: Test
+        run: ctest --test-dir build/windows-x64 -C ${{ matrix.config }} --output-on-failure
+
+  linux:
+    name: Linux (build verification)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchain
+        run: sudo apt-get update && sudo apt-get install -y ninja-build g++
+      - name: Configure
+        run: cmake --preset linux-dev
+      - name: Build
+        run: cmake --build --preset linux-dev
+      - name: Test
+        run: ctest --preset linux-dev

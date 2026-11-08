@@ -1,0 +1,32 @@
+# Build output
+build/
+out/
+*.user
+*.suo
+*.sln.docstates
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Compiled artifacts
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.exe
+*.pdb
+
+# Logs / local state
+*.log
+.cache/
