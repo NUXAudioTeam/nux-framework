@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(nxf
-    VERSION 0.4.0
+    VERSION 0.5.0
     DESCRIPTION "NXF - NUX Framework: an original, JUCE-independent C++ framework for audio applications"
     LANGUAGES CXX)
 
@@ -51,6 +51,8 @@ nxf_set_warnings(nxf_platform)
 
 add_library(nxf_audio
     src/audio/AudioDevice.cpp
+    src/audio/AudioNode.cpp
+    src/audio/AudioGraph.cpp
     src/audio/OfflineAudioBackend.cpp)
 if(WIN32)
     target_sources(nxf_audio PRIVATE src/audio/windows/WasapiAudioBackend.cpp)
@@ -86,7 +88,10 @@ if(NXF_BUILD_TESTS)
         "PlatformEventTests:nxf.platform.event"
         "AudioBufferTests:nxf.audio.buffer"
         "AudioStreamTests:nxf.audio.stream"
-        "AudioBackendTests:nxf.audio.backend")
+        "AudioBackendTests:nxf.audio.backend"
+        "AudioGraphTests:nxf.audio.graph"
+        "TransportTests:nxf.audio.transport"
+        "AudioEngineTests:nxf.audio.engine")
     foreach(entry IN LISTS NXF_UNIT_TESTS)
         string(REPLACE ":" ";" parts "${entry}")
         list(GET parts 0 source_name)
@@ -99,4 +104,4 @@ if(NXF_BUILD_TESTS)
     endforeach()
 endif()
 
-message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3, hardware unverified). All other modules are planned - see docs/ROADMAP.md.")
+message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3-4, hardware unverified). All other modules are planned - see docs/ROADMAP.md.")

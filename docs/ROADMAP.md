@@ -10,7 +10,7 @@ exists. Future phases are planned, not implemented.
 | 1 | NXF Core — types, memory, logging, errors, threading, events, utilities | ✅ done |
 | 2 | Platform Layer — Windows filesystem, timing, synchronization, system information | ✅ done |
 | 3 | Audio Foundation — device abstraction, buffers, streams, WASAPI input/output | 🟡 code complete: abstraction + offline backend tested, WASAPI compiles in CI; **opening a real device is NOT PERFORMED (no hardware)** |
-| 4 | Audio Engine — graph, nodes, routing, mixing, transport, real-time processing | ⬜ planned |
+| 4 | Audio Engine — graph, nodes, routing, mixing, transport, real-time processing | ✅ done (offline-verified; device path still hardware-unverified) |
 | 5 | DSP Engine — FFT, filters, EQ, dynamics, reverb, delay, resampling | ⬜ planned |
 | 6 | MIDI System — messages, devices, clocks, routing, event queues | ⬜ planned |
 | 7 | GUI Framework — windows, components, controls, event handling, layout engine | ⬜ planned |
