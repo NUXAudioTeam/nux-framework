@@ -15,7 +15,7 @@ but not limited to them.
 | **Language / build** | C++20 · CMake 3.22+ |
 | **First target** | Windows x64 (Linux used for build verification) |
 
-> **Status: Phase 5 — DSP Engine.**
+> **Status: Phase 6 — MIDI System.**
 > `nxf_core` provides the foundation, `nxf_platform` the OS services,
 > and `nxf_audio` the audio foundation: interleaved buffers, a
 > device/stream abstraction, an offline (simulated) backend used by
@@ -83,7 +83,7 @@ ctest --preset linux-dev
 Expected output of the example:
 
 ```text
-NXF - NUX Framework 0.6.0
+NXF - NUX Framework 0.7.0
 JUCE-independent C++20 framework for NUX audio applications.
 ```
 
