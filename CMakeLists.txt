@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(nxf
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION "NXF - NUX Framework: an original, JUCE-independent C++ framework for audio applications"
     LANGUAGES CXX)
 
@@ -22,7 +22,10 @@ include(NxfWarnings)
 # boundaries (docs/ARCHITECTURE.md), not as empty libraries pretending
 # to be finished work.
 
-add_library(nxf_core src/core/Version.cpp)
+add_library(nxf_core
+    src/core/Version.cpp
+    src/core/Time.cpp
+    src/core/ConsoleLogger.cpp)
 add_library(nxf::core ALIAS nxf_core)
 target_include_directories(nxf_core PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -36,10 +39,24 @@ endif()
 
 if(NXF_BUILD_TESTS)
     enable_testing()
-    add_executable(nxf_unit_tests tests/unit/CoreVersionTests.cpp)
-    target_link_libraries(nxf_unit_tests PRIVATE nxf::core)
-    nxf_set_warnings(nxf_unit_tests)
-    add_test(NAME nxf.unit.core_version COMMAND nxf_unit_tests)
+    find_package(Threads REQUIRED)
+    set(NXF_UNIT_TESTS
+        "CoreVersionTests:nxf.unit.core_version"
+        "CoreErrorTests:nxf.unit.core_error"
+        "CoreQueueTests:nxf.unit.core_queue"
+        "CoreMemoryTests:nxf.unit.core_memory"
+        "CoreLoggingTests:nxf.unit.core_logging"
+        "CoreTimeTests:nxf.unit.core_time")
+    foreach(entry IN LISTS NXF_UNIT_TESTS)
+        string(REPLACE ":" ";" parts "${entry}")
+        list(GET parts 0 source_name)
+        list(GET parts 1 test_label)
+        add_executable(${source_name} tests/unit/${source_name}.cpp)
+        target_link_libraries(${source_name} PRIVATE nxf::core Threads::Threads)
+        target_include_directories(${source_name} PRIVATE tests/unit)
+        nxf_set_warnings(${source_name})
+        add_test(NAME ${test_label} COMMAND ${source_name})
+    endforeach()
 endif()
 
-message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core. All other modules are planned - see docs/ROADMAP.md.")
+message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1). All other modules are planned - see docs/ROADMAP.md.")

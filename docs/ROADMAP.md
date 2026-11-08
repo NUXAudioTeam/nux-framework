@@ -6,8 +6,8 @@ exists. Future phases are planned, not implemented.
 
 | Phase | Scope | Status |
 |---|---|---|
-| 0 | Architecture & Repository Foundation — repo, CMake layout, coding standards, module contracts, licensing inventory | 🟡 **in progress** (this phase) |
-| 1 | NXF Core — types, memory, logging, errors, threading, events, utilities | ⬜ planned |
+| 0 | Architecture & Repository Foundation — repo, CMake layout, coding standards, module contracts, licensing inventory | ✅ done |
+| 1 | NXF Core — types, memory, logging, errors, threading, events, utilities | ✅ done |
 | 2 | Platform Layer — Windows filesystem, timing, synchronization, system information | ⬜ planned |
 | 3 | Audio Foundation — device abstraction, buffers, streams, WASAPI input/output | ⬜ planned |
 | 4 | Audio Engine — graph, nodes, routing, mixing, transport, real-time processing | ⬜ planned |
