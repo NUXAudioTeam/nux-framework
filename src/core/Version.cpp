@@ -9,7 +9,7 @@ std::string_view frameworkName() noexcept
 
 std::string_view versionString() noexcept
 {
-    return "0.2.0";
+    return "0.3.0";
 }
 
 } // namespace nxf::core

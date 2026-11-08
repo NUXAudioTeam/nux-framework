@@ -3,9 +3,9 @@
 NXF is a modular C++20 framework for audio applications. It is an
 original design: no JUCE dependency, no JUCE API compatibility, no
 adapted JUCE source. This document defines module boundaries and the
-dependency rules between them. Phase 1 implements `nxf_core` (errors/results, logging
-interfaces, preallocated buffers, an SPSC event queue, time
-utilities; each unit-tested). The rest are contracts for later phases.
+dependency rules between them. Phase 1 implemented `nxf_core`; Phase 2 added `nxf_platform`
+(filesystem, timing, events, system information with Windows/POSIX
+backend files selected by CMake). The rest are contracts for later phases.
 
 ## Layering (dependencies point down only)
 
