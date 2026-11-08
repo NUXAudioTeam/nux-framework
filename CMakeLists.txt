@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(nxf
-    VERSION 0.6.0
+    VERSION 0.7.0
     DESCRIPTION "NXF - NUX Framework: an original, JUCE-independent C++ framework for audio applications"
     LANGUAGES CXX)
 
@@ -83,6 +83,25 @@ target_compile_features(nxf_dsp PUBLIC cxx_std_20)
 target_link_libraries(nxf_dsp PUBLIC nxf::core)
 nxf_set_warnings(nxf_dsp)
 
+add_library(nxf_midi
+    src/midi/MidiMessage.cpp
+    src/midi/MidiStreamParser.cpp
+    src/midi/MidiRouter.cpp
+    src/midi/OfflineMidiBackend.cpp)
+if(WIN32)
+    target_sources(nxf_midi PRIVATE src/midi/windows/WinMmMidiBackend.cpp)
+    target_link_libraries(nxf_midi PRIVATE winmm)
+else()
+    target_sources(nxf_midi PRIVATE src/midi/SystemMidiBackendFallback.cpp)
+endif()
+add_library(nxf::midi ALIAS nxf_midi)
+target_include_directories(nxf_midi PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+target_compile_features(nxf_midi PUBLIC cxx_std_20)
+target_link_libraries(nxf_midi PUBLIC nxf::core)
+nxf_set_warnings(nxf_midi)
+
 if(NXF_BUILD_EXAMPLES)
     add_subdirectory(examples/hello_nxf)
 endif()
@@ -111,17 +130,22 @@ if(NXF_BUILD_TESTS)
         "DspFilterTests:nxf.dsp.filters"
         "DspDynamicsTests:nxf.dsp.dynamics"
         "DspEffectsTests:nxf.dsp.effects"
-        "DspResampleTests:nxf.dsp.resample")
+        "DspResampleTests:nxf.dsp.resample"
+        "MidiMessageTests:nxf.midi.message"
+        "MidiParserTests:nxf.midi.parser"
+        "MidiClockTests:nxf.midi.clock"
+        "MidiRouterTests:nxf.midi.router"
+        "MidiDeviceTests:nxf.midi.devices")
     foreach(entry IN LISTS NXF_UNIT_TESTS)
         string(REPLACE ":" ";" parts "${entry}")
         list(GET parts 0 source_name)
         list(GET parts 1 test_label)
         add_executable(${source_name} tests/unit/${source_name}.cpp)
-        target_link_libraries(${source_name} PRIVATE nxf::core nxf::platform nxf::audio nxf::dsp Threads::Threads)
+        target_link_libraries(${source_name} PRIVATE nxf::core nxf::platform nxf::audio nxf::dsp nxf::midi Threads::Threads)
         target_include_directories(${source_name} PRIVATE tests/unit)
         nxf_set_warnings(${source_name})
         add_test(NAME ${test_label} COMMAND ${source_name})
     endforeach()
 endif()
 
-message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3-4, hardware unverified), nxf_dsp (Phase 5). All other modules are planned - see docs/ROADMAP.md.")
+message(STATUS "NXF ${PROJECT_VERSION} configured (C++20). Implemented modules: nxf_core (Phase 1), nxf_platform (Phase 2), nxf_audio (Phase 3-4, hardware unverified), nxf_dsp (Phase 5), nxf_midi (Phase 6, hardware unverified). All other modules are planned - see docs/ROADMAP.md.")

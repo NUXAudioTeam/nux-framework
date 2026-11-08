@@ -12,7 +12,7 @@ exists. Future phases are planned, not implemented.
 | 3 | Audio Foundation — device abstraction, buffers, streams, WASAPI input/output | 🟡 code complete: abstraction + offline backend tested, WASAPI compiles in CI; **opening a real device is NOT PERFORMED (no hardware)** |
 | 4 | Audio Engine — graph, nodes, routing, mixing, transport, real-time processing | ✅ done (offline-verified; device path still hardware-unverified) |
 | 5 | DSP Engine — FFT, filters, EQ, dynamics, reverb, delay, resampling | ✅ done (known-answer tests; resampler is a linear baseline, not final quality) |
-| 6 | MIDI System — messages, devices, clocks, routing, event queues | ⬜ planned |
+| 6 | MIDI System — messages, devices, clocks, routing, event queues | 🟡 code complete: pure logic + offline backend tested, WinMM compiles in CI; **real MIDI hardware NOT PERFORMED**. WinMM sysex output not yet supported |
 | 7 | GUI Framework — windows, components, controls, event handling, layout engine | ⬜ planned |
 | 8 | Graphics Engine — 2D renderer, text, images, waveform drawing, GPU acceleration | ⬜ planned |
 | 9 | Project & State System — serialization, project files, undo/redo, saved-state | ⬜ planned |
